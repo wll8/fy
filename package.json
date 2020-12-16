@@ -1,0 +1,32 @@
+{
+  "name": "@wll8/fy",
+  "version": "0.0.1",
+  "description": "翻译文本, 方便程序命名",
+  "main": "fy.js",
+  "bin": {
+    "fy": "fy.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/wll8/fy.git"
+  },
+  "dependencies": {
+    "translate-platforms": "^0.0.7"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=10.12.0"
+  },
+  "os": [
+    "win32",
+    "darwin",
+    "linux"
+  ],
+  "keywords": [
+    "translate"
+  ],
+  "author": "xw",
+  "license": "MIT"
+}
