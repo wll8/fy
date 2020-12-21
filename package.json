@@ -1,6 +1,6 @@
 {
   "name": "@wll8/fy",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "翻译文本, 方便程序命名",
   "main": "fy.js",
   "bin": {

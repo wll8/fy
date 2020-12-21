@@ -40,12 +40,41 @@ async function translateTextToLine({ text, appid, key }) { // 翻译行
   async function translatePlatforms() {
     return new Promise(async (resolve, reject) => {
       const { google, microsoft, youdao, baidu } = require('translate-platforms')
-      // - [ ] fix: youdao 错误: https://github.com/imlinhanchao/translate-platforms/issues/1
       let errInfo
-      const result = await microsoft(str, translateFormat).catch(err => { errInfo = err })
-        || await google(str, translateFormat).catch(err => { errInfo = err })
-        || await baidu(str, translateFormat).catch(err => { errInfo = err })
-        || await youdao(str, translateFormat).catch(err => { errInfo = err })
+      const handleYouDao = (...arg) => {
+        // - [ ] fix: youdao 的翻译结果 text 和 word 顺序颠倒了: https://github.com/imlinhanchao/translate-platforms/issues/1
+        return new Promise((resolve, reject) => {
+          youdao(...arg).then(res => {
+            return resolve({
+              ...res,
+              text: res.word,
+              word: res.text,
+            })
+          }).catch(err => reject(err))
+        })
+      }
+      // 翻译中文时, 把有道放在最前面, 因为有道响应速度最快
+      // 翻译英文时, 把有道放在最后面, 因为有道不能直接翻译驼峰式文本
+      const apiList = isChinese ? [
+        handleYouDao,
+        baidu,
+        microsoft,
+        google,
+      ] : [
+        baidu,
+        microsoft,
+        google,
+        handleYouDao,
+      ]
+
+      let result = undefined
+      for (let index = 0; index < apiList.length; index++) {
+        if(result) {
+          break
+        } else {
+          result = await apiList[index](str, translateFormat).catch(err => { errInfo = err })
+        }
+      }
       if (errInfo) {
         console.log(`err`, errInfo)
         reject(errInfo)
